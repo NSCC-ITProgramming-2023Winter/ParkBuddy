@@ -1,20 +1,22 @@
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
-const itemWidth = screenWidth * 0.9; // 90% of the screen width
-
-const streetNames = [
-  'Hunter Street', 'Robie Street', 'Inglis Street', 'Barrington Street',
-  'South Street', 'Queen Street', 'Bloomfield Street', 'Gottingen Street',
-  'Spring Garden Road', 'Bedford Row', 'Sackville Street', 'Hollis Street',
-  'Agricola Street', 'Young Street', 'North Street', 'South Park Street',
-  'Victoria Road', 'Oxford Street', 'Dalhousie Drive', 'Kempt Road',
-  'Almon Street', 'Connolly Street', 'Coburg Road', 'Quinpool Road',
-  'Joseph Howe Drive', 'Chebucto Road', 'Mumford Road', 'Main Avenue',
-  'Lacewood Drive', 'Dunbrack Street'
-];
+const itemWidth = screenWidth * 0.9;
 
 export default function HomeScreen() {
+  const [streetNames, setStreetNames] = useState([]);
+
+  useEffect(() => {
+    fetch('https://360ae117-550c-4dfc-a7c9-368701d3a2b9.mock.pstmn.io/wp-json/wp/v2/posts')
+      .then(response => response.json())
+      .then(data => {
+        const names = data.map((item: { title: { rendered: string } }) => item.title.rendered);
+        setStreetNames(names);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Park Buddy</Text>
@@ -26,7 +28,7 @@ export default function HomeScreen() {
       <Text style={styles.subHeader}>Street Names</Text>
       <FlatList
         data={streetNames}
-        keyExtractor={(item) => item}
+        keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.listContainer}
         renderItem={({ item }) => (
           <TouchableOpacity style={[styles.streetItem, { width: itemWidth }]}>

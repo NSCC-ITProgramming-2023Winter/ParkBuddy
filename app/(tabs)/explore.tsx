@@ -4,7 +4,7 @@ import { StyleSheet, Image, Platform, Text, View } from 'react-native';
 export default function TabTwoScreen() {
   return (
     <View style={styles.container}>
-    <Text style={styles.header}>Hunter Street</Text>
+    <Text style={styles.header}>Agricola St</Text>
   </View>
   );
 }
