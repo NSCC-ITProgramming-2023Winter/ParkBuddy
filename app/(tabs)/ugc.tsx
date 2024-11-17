@@ -34,7 +34,7 @@ export default function HomeScreen () {
                         
                     />
                 </View>
-                <Button title="Publish Here" color={styles.button.backgroundColor} onPress={() => {}} >Publush Here </Button>
+                <Button title="Publish Here" color={styles.button.backgroundColor} onPress={() => {}} >Publish Here </Button>
             </ScrollView>
         </View>
         
