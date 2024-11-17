@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { TextInput, Text, View, StyleSheet, ScrollView, Keyboard, Button } from 'react-native';
+import { TextInput, Text, View, StyleSheet, ScrollView, Keyboard, TouchableOpacity } from 'react-native';
 
 
 export default function HomeScreen () {
@@ -9,7 +9,7 @@ export default function HomeScreen () {
 
     return (
         <View style={styles.container}> 
-            <Text style={styles.header}>UGC</Text>
+            <Text style={styles.header}>UGC Page</Text>
             <ScrollView> 
                 <View style={styles.textInputOne}>
                     <TextInput 
@@ -21,7 +21,6 @@ export default function HomeScreen () {
                         onBlur={() => Keyboard.dismiss()}
                     />
                 </View>
-
                 <View style={styles.textInputTwo}>
                     <TextInput
                         multiline ={true}
@@ -31,15 +30,14 @@ export default function HomeScreen () {
                         value={content}
                         onChangeText={setContent}
                         onBlur={() => Keyboard.dismiss()}
-                        
                     />
                 </View>
-                <Button title="Publish Here" color={styles.button.backgroundColor} onPress={() => {}} >Publish Here </Button>
-            </ScrollView>
-        </View>
-        
+                <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText}>Publish Here</Text>
+                </TouchableOpacity>
+            </ScrollView>  
+        </View>       
     );
-
 }
 
 const styles = StyleSheet.create({
@@ -48,53 +46,74 @@ const styles = StyleSheet.create({
         backgroundColor: '#D9D9D9',
         alignItems: 'center',
         flex: 1,
-        
-    }, 
-    textInputOne: {
-        paddingTop: 1,
-        backgroundColor: 'White',
-        borderRadius: 20,
-    },
-    textInputTwo: {
-        paddingTop: 10,
-
-    },
-    input: {
-        height: 40, 
-        width: 300,
-        borderColor: "gray",
-        backgroundColor: 'White', 
-        borderWidth: 1,
-        marginBottom: 12,
-        paddingHorizontal: 8,
     }, 
 
-    inputTwo: {
-        height: 100,
-        width: 300,
-        borderColor: "gray",
-        backgroundColor: 'White', 
-        borderWidth: 1,
-        marginBottom: 12,
-        paddingHorizontal: 8,
-    },
-    pageTitle: {
-        textAlign: 'center',
-    },
     header: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
-        color: '#000',
+
     },
 
+    textInputOne: {
+        paddingTop: 1,
+        backgroundColor: '#D9D9D9',
+        borderRadius: 15,
+    },
+
+    input: {
+        height: 40, 
+        width: 300,
+        borderRadius: 15,
+        borderColor: "gray",
+        backgroundColor: '#f0f0f0',
+        borderWidth: 1,
+        marginBottom: 12,
+        paddingHorizontal: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
+    }, 
+    textInputTwo: {
+        paddingTop: 10,
+        marginBottom: 12,
+        backgroundColor: '#D9D9D9',
+    },
+    inputTwo: {
+        height: 150,
+        width: 300,
+        borderRadius: 15,
+        backgroundColor: '#f0f0f0',
+        borderColor: "gray", 
+        borderWidth: 1,
+        marginBottom: 12,
+        paddingHorizontal: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
+    },
+    
     button: {
-        backgroundColor: 'blue',
-        color: 'white',
-        padding: 10,
-        borderRadius: 10,
-        width: 100,
+        backgroundColor: 'black',
+        paddingVertical: 12, 
+        paddingTop: 10,
+        width: 250,
+        borderRadius: 15,
+        left: 26,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
+    },
+
+    buttonText: {
         textAlign: 'center',
-        margin: 10,
+        color: 'white',
+        shadowColor: '#000',
     }
 }); 
