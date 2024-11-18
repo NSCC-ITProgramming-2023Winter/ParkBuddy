@@ -14,7 +14,7 @@ export default function HomeScreen () {
                 <View style={styles.textInputOne}>
                     <TextInput 
                         style={styles.input}
-                        placeholder="Title"
+                        placeholder="Name of the Street"
                         placeholderTextColor={'#888'}
                         value={title}
                         onChangeText={setTitle}
@@ -26,7 +26,7 @@ export default function HomeScreen () {
                         multiline ={true}
                         placeholderTextColor={'#888'}
                         style={styles.inputTwo}
-                        placeholder= "content goes here"
+                        placeholder= "Cleaning date & odd/even side"
                         value={content}
                         onChangeText={setContent}
                         onBlur={() => Keyboard.dismiss()}
