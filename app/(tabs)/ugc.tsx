@@ -1,11 +1,73 @@
-import React from 'react';
-import { useState } from 'react';
-import { TextInput, Text, View, StyleSheet, ScrollView, Keyboard, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { 
+    TextInput, Text, View, StyleSheet, ScrollView, 
+    Keyboard, TouchableOpacity, Alert, ActivityIndicator, Picker 
+} from 'react-native';
+import base64 from "base-64";
+import utf8 from "utf8";
 
+const categories = [
+    { id: 2, label: "Uncategorized" },
+    { id: 3, label: "street cleaning" },
+    { id: 4, label: "Opinion" },
+    { id: 5, label: "Events" }
+];
 
-export default function HomeScreen () {
+const postApiUrl = "https://waltonca.me/wp-json/wp/v2/posts";
+
+export default function HomeScreen() {
     const [title, setTitle] = useState(''); 
     const [content, setContent] = useState('');
+    const [category, setCategory] = useState(categories[0].id);
+    const [isLoading, setIsLoading] = useState(false);
+
+    // WordPress Authentication
+    const username = "admin";
+    const password = "od4A sodf INg2 hTv0 0WGe ZLIA";
+    const credentials = `${username}:${password}`;
+    const bytes = utf8.encode(credentials);
+    const basicAuth = base64.encode(bytes);
+
+    // Create Post
+    const createPost = async () => {
+        const postData = new URLSearchParams();
+        postData.append('title', title);
+        postData.append('content', content);
+        postData.append('categories', category.toString()); 
+        postData.append('status', 'publish');
+    
+        const response = await fetch(postApiUrl, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Basic ' + basicAuth,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: postData.toString()
+        });
+
+        if (!response.ok) {
+            throw new Error('Post creation failed');
+        }
+
+        return await response.json();
+    };
+
+    const handlePublish = async () => {
+        if (!title || !content) {
+            Alert.alert('Validation Error', 'Title and content cannot be empty.');
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const post = await createPost();
+            Alert.alert('Success', `Post created with ID: ${post.id}`);
+        } catch (error) {
+            Alert.alert('Error', error.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <View style={styles.container}> 
@@ -23,17 +85,32 @@ export default function HomeScreen () {
                 </View>
                 <View style={styles.textInputTwo}>
                     <TextInput
-                        multiline ={true}
+                        multiline={true}
                         placeholderTextColor={'#888'}
                         style={styles.inputTwo}
-                        placeholder= "Cleaning date & odd/even side"
+                        placeholder="Cleaning date & odd/even side"
                         value={content}
                         onChangeText={setContent}
                         onBlur={() => Keyboard.dismiss()}
                     />
                 </View>
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>Publish Here</Text>
+                <View style={styles.picker}>
+                    <Text>Select Category:</Text>
+                    <Picker
+                        selectedValue={category}
+                        onValueChange={(itemValue) => setCategory(itemValue)}
+                    >
+                        {categories.map((cat) => (
+                            <Picker.Item key={cat.id} label={cat.label} value={cat.id} />
+                        ))}
+                    </Picker>
+                </View>
+                <TouchableOpacity style={styles.button} onPress={handlePublish}>
+                    {isLoading ? (
+                        <ActivityIndicator color="white" />
+                    ) : (
+                        <Text style={styles.buttonText}>Publish Here</Text>
+                    )}
                 </TouchableOpacity>
             </ScrollView>  
         </View>       
@@ -52,7 +129,6 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
-
     },
 
     textInputOne: {
@@ -115,5 +191,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'white',
         shadowColor: '#000',
+    },
+
+    picker: {
+        marginVertical: 10,
     }
-}); 
+});
