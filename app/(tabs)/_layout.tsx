@@ -23,17 +23,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Street Page',
-          tabBarIcon: ({ color, focused }) => (
-            // <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-            <TabBarIcon name={focused ? 'map' : 'map-outline'} color={color} />
-            // <TabBarIcon name={focused ? 'road-variant' : 'road-variant'} color={color} />
-          ),
-        }}
-      />
+      
     </Tabs>
   );
 }
