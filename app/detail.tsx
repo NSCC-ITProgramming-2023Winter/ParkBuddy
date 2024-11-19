@@ -1,8 +1,12 @@
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView} from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import RenderHTML from 'react-native-render-html';
+import { Dimensions } from 'react-native';
 
 export default function DetailScreen() {
   const { slug, title, content } = useLocalSearchParams();  // use useLocalSearchParams read query params
+  const screenWidth = Dimensions.get('window').width;
 
   return (
     <ScrollView style={styles.container}>
@@ -10,9 +14,12 @@ export default function DetailScreen() {
         <Text style={styles.header}>{title}</Text>
 
         <View style={styles.section}>
-          <Text style={styles.sectionText}>{content}</Text>
+        <RenderHTML
+            contentWidth={screenWidth}
+            source={{ html: content }}
+          />
         </View>
-
+        
       </View>
     </ScrollView>
   );
@@ -21,7 +28,7 @@ export default function DetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#D9D9D9',
     paddingHorizontal: 20,
     paddingTop: 30,
   },
