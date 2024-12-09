@@ -13,7 +13,7 @@ const categories = [
     { id: 5, label: "Events" }
 ];
 
-const postApiUrl = "https://waltonca.me/wp-json/wp/v2/posts";
+const postApiUrl = "https://159.89.114.75/wp-json/wp/v2/posts";
 
 export default function HomeScreen() {
     const [title, setTitle] = useState(''); 
