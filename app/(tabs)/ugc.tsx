@@ -14,12 +14,37 @@ const categories = [
     { id: 5, label: "Events" }
 ];
 
+// const street = [
+//     { id: 1, label: "even"},
+//     { id: 2, label: "odd"}
+// ]
+
+const oddDays =[
+    {id: 1, label: "Monday"},
+    {id: 2, label: "Tuesday"},
+    {id: 3, label: "Wednesday"},
+    {id: 4, label: "Thursday"},
+    {id: 5, label: "Friday"}
+]
+
+const evenDays =[
+    {id: 1, label: "Monday"},
+    {id: 2, label: "Tuesday"},
+    {id: 3, label: "Wednesday"},
+    {id: 4, label: "Thursday"},
+    {id: 5, label: "Friday"}
+]
+
+
 const postApiUrl = "https://159.89.114.75/wp-json/wp/v2/posts";
 
 export default function HomeScreen() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    //const [streetSide, setStreetSide] = useState(street[0]);
     const [category, setCategory] = useState(categories[0]);
+    const [oddDay, setOddDay] = useState(oddDays[0]);
+    const [evenDay, setEvenDay] = useState(evenDays[0]);
     const [isLoading, setIsLoading] = useState(false);
 
     // WordPress Authentication
@@ -31,12 +56,16 @@ export default function HomeScreen() {
 
     // Create Post
     const createPost = async () => {
-        const postData = new URLSearchParams();
+        const postData = 
+        new URLSearchParams();
         postData.append('title', title);
         postData.append('content', content);
+        postData.append('odd_day', oddDay.id.toString());
+        postData.append('even_day', evenDay.id.toString());
         postData.append('categories', category.id.toString());
         postData.append('status', 'publish');
-
+       
+        
         const response = await fetch(postApiUrl, {
             method: 'POST',
             headers: {
@@ -45,6 +74,7 @@ export default function HomeScreen() {
             },
             body: postData.toString()
         });
+       
 
         if (!response.ok) {
             throw new Error('Post creation failed');
@@ -84,16 +114,43 @@ export default function HomeScreen() {
                         onBlur={() => Keyboard.dismiss()}
                     />
                 </View>
-                <View style={styles.textInputTwo}>
-                    <TextInput
-                        multiline={true}
-                        placeholderTextColor={'#888'}
-                        style={styles.inputTwo}
-                        placeholder="Cleaning date & odd/even side"
-                        value={content}
-                        onChangeText={setContent}
-                        onBlur={() => Keyboard.dismiss()}
+                <View>
+                    <Text style={styles.date}>
+                        Select Date: 
+                    </Text>
+                </View>
+                <View style={styles.even}>
+                    <Text>Even Side: </Text>
+                    <Select
+                        value={evenDay}
+                        onChange={setEvenDay}
+                        options={evenDays}
+                        getOptionLabel={(e) => e.label}
+                        getOptionValue={(e) => e.id}
+                        menuPortalTarget={document.body} // Required to avoid zIndex issue
+                        styles={{
+                            menuPortal: base => ({ ...base, zIndex: 9999 }), // Required to avoid zIndex issue
+                        }}
                     />
+                </View >
+                <View style={styles.odd}>
+                    <Text>Odd Side: </Text>
+                    <Select 
+                        value={oddDay}
+                        onChange={setOddDay}
+                        options={oddDays}
+                        getOptionLabel={(e) => e.label}
+                        getOptionValue={(e) => e.id}
+                        menuPortalTarget={document.body} // Required to avoid zIndex issue
+                        styles={{
+                            menuPortal: base => ({ ...base, zIndex: 9999 }), // Required to avoid zIndex issue
+                        }}   
+                    />
+                </View>
+                <View >
+                    <Text style={styles.time}>
+                        Time: 12:05 AM to 8:00 AM
+                    </Text>
                 </View>
                 <View style={styles.picker}>
                     <Text>Select Category:</Text>
@@ -159,10 +216,13 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 5,
     },
-    textInputTwo: {
-        paddingTop: 10,
-        marginBottom: 12,
+    even: {
+        marginVertical: 10, 
+        padding: 10,
+        marginBottom: 5,
         backgroundColor: '#D9D9D9',
+        borderRadius: 8,
+        width: 300,
     },
     inputTwo: {
         height: 150,
@@ -203,8 +263,28 @@ const styles = StyleSheet.create({
         color: 'white',
         shadowColor: '#000',
     },
+    odd: {
+        padding: 10,
+        backgroundColor: '#D9D9D9',
+        borderRadius: 8,
+        width: 300,
+        marginVertical: 3,
+
+    },
+
+    time : {
+        fontWeight: 'bold', 
+    },
+
+    date : {
+        fontWeight: 'bold',
+    },
 
     picker: {
-        marginVertical: 10,
+        // marginVertical: 9,
+        padding: 10,
+        backgroundColor: '#D9D9D9',
+        borderRadius: 8,
+        width: 300,
     },
 });
