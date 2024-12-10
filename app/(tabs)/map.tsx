@@ -23,6 +23,41 @@ const App = () => {
       showUserLocation: true,    // 显示用户位置
     });
 
+    // GeoJSON 数据
+    const geojsonData = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: [
+              [-63.590, 44.644],
+              [-63.599, 44.664],
+            ],
+          },
+          properties: {
+            title: 'Line A',
+            description: 'This is a line',
+          },
+        },
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: [
+              [-63.580, 44.654],
+              [-63.589, 44.674],
+            ],
+          },
+          properties: {
+            title: 'Line B',
+            description: 'This is a line',
+          },
+        }
+      ],
+    };
+
     // 等待地图加载完成后再添加控件和触发定位
     map.on('load', () => {
       // 添加定位控件到地图
@@ -30,6 +65,37 @@ const App = () => {
 
       // 启动定位功能
       geolocate.trigger();  // 触发定位
+
+      // 添加数据源
+      map.addSource('lines', {
+        type: 'geojson',
+        data: geojsonData,
+      });
+
+      // 添加线
+      map.addLayer({
+        id: 'line-layer',
+        type: 'line',
+        source: 'lines',
+        paint: {
+          'line-color': '#0000FF',
+          'line-width': 3,
+        },
+      });
+
+      // 添加弹窗
+      map.on('click', 'line-layer', (e) => {
+        // 获取线的第一个坐标
+        const coordinates = e.features[0].geometry.coordinates[0];  // 使用第一个坐标点（或你可以选其他）
+        const { title, description } = e.features[0].properties;
+
+        // 弹出窗口
+        new mapboxgl.Popup()
+          .setLngLat(coordinates)
+          .setHTML(`<h3>${title}</h3><p>${description}</p>`)
+          .addTo(map);
+      });
+
     });
 
   }, []);
