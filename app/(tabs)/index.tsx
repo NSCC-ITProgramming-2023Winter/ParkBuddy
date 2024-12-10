@@ -9,7 +9,7 @@ export default function HomeScreen() {
   const [streetNames, setStreetNames] = useState([]);
 
   useEffect(() => {
-    fetch('https://159.89.114.75/wp-json/wp/v2/posts')
+    fetch('http://159.89.114.75/wp-json/wp/v2/posts')
       .then(response => response.json())
       .then(data => {
         setStreetNames(data);

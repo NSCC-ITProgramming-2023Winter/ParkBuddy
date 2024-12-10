@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { 
     TextInput, Text, View, StyleSheet, ScrollView, 
-    Keyboard, TouchableOpacity, Alert, ActivityIndicator, Picker 
+    Keyboard, TouchableOpacity, Alert, ActivityIndicator 
 } from 'react-native';
-import base64 from "base-64";
-import utf8 from "utf8";
+import Select from 'react-select';  // Import react-select
+import base64 from 'base-64';
+import utf8 from 'utf8';
 
 const categories = [
     { id: 2, label: "Uncategorized" },
@@ -16,9 +17,9 @@ const categories = [
 const postApiUrl = "https://159.89.114.75/wp-json/wp/v2/posts";
 
 export default function HomeScreen() {
-    const [title, setTitle] = useState(''); 
+    const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [category, setCategory] = useState(categories[0].id);
+    const [category, setCategory] = useState(categories[0]);
     const [isLoading, setIsLoading] = useState(false);
 
     // WordPress Authentication
@@ -33,9 +34,9 @@ export default function HomeScreen() {
         const postData = new URLSearchParams();
         postData.append('title', title);
         postData.append('content', content);
-        postData.append('categories', category.toString()); 
+        postData.append('categories', category.id.toString());
         postData.append('status', 'publish');
-    
+
         const response = await fetch(postApiUrl, {
             method: 'POST',
             headers: {
@@ -70,11 +71,11 @@ export default function HomeScreen() {
     };
 
     return (
-        <View style={styles.container}> 
+        <View style={styles.container}>
             <Text style={styles.header}>UGC Page</Text>
-            <ScrollView> 
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.textInputOne}>
-                    <TextInput 
+                    <TextInput
                         style={styles.input}
                         placeholder="Name of the Street"
                         placeholderTextColor={'#888'}
@@ -96,39 +97,45 @@ export default function HomeScreen() {
                 </View>
                 <View style={styles.picker}>
                     <Text>Select Category:</Text>
-                    <Picker
-                        selectedValue={category}
-                        onValueChange={(itemValue) => setCategory(itemValue)}
-                    >
-                        {categories.map((cat) => (
-                            <Picker.Item key={cat.id} label={cat.label} value={cat.id} />
-                        ))}
-                    </Picker>
+                    <Select
+                        value={category}
+                        onChange={setCategory}
+                        options={categories}
+                        getOptionLabel={(e) => e.label}
+                        getOptionValue={(e) => e.id}
+                    />
                 </View>
+            </ScrollView>
+            <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.button} onPress={handlePublish}>
                     {isLoading ? (
                         <ActivityIndicator color="white" />
                     ) : (
-                        <Text style={styles.buttonText}>Publish Here</Text>
+                        <Text style={styles.buttonText}>Publish</Text>
                     )}
                 </TouchableOpacity>
-            </ScrollView>  
-        </View>       
+            </View>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 50,
+        flex: 1,
         backgroundColor: '#D9D9D9',
         alignItems: 'center',
-        flex: 1,
-    }, 
+    },
 
     header: {
         fontSize: 24,
         fontWeight: 'bold',
+        marginTop: 50,
         marginBottom: 20,
+    },
+
+    scrollContainer: {
+        flexGrow: 1,
+        paddingBottom: 100,
     },
 
     textInputOne: {
@@ -138,7 +145,7 @@ const styles = StyleSheet.create({
     },
 
     input: {
-        height: 40, 
+        height: 40,
         width: 300,
         borderRadius: 15,
         borderColor: "gray",
@@ -151,7 +158,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 3,
         elevation: 5,
-    }, 
+    },
     textInputTwo: {
         paddingTop: 10,
         marginBottom: 12,
@@ -162,7 +169,7 @@ const styles = StyleSheet.create({
         width: 300,
         borderRadius: 15,
         backgroundColor: '#f0f0f0',
-        borderColor: "gray", 
+        borderColor: "gray",
         borderWidth: 1,
         marginBottom: 12,
         paddingHorizontal: 8,
@@ -172,14 +179,18 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 5,
     },
-    
+
+    buttonContainer: {
+        justifyContent: 'center', // Centering the button container
+        alignItems: 'center', // Centering the button horizontally
+        marginBottom: 20, // Optional, to give some space from the bottom
+    },
+
     button: {
         backgroundColor: 'black',
-        paddingVertical: 12, 
-        paddingTop: 10,
+        paddingVertical: 12,
         width: 250,
         borderRadius: 15,
-        left: 26,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.3,
@@ -195,5 +206,5 @@ const styles = StyleSheet.create({
 
     picker: {
         marginVertical: 10,
-    }
+    },
 });
