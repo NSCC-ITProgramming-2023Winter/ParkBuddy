@@ -36,7 +36,7 @@ const evenDays =[
 ]
 
 
-const postApiUrl = "https://159.89.114.75/wp-json/wp/v2/posts";
+const postApiUrl = "https://gjixy.me/wp-json/wp/v2/posts";
 
 export default function HomeScreen() {
     const [title, setTitle] = useState('');
@@ -54,14 +54,15 @@ export default function HomeScreen() {
     const bytes = utf8.encode(credentials);
     const basicAuth = base64.encode(bytes);
 
+    // Generate content by combining oddDay and evenDay values
+    
+
     // Create Post
     const createPost = async () => {
-        const postData = 
-        new URLSearchParams();
+        //const content = `Odd Side: ${oddDay.label}\nEven Side: ${evenDay.label}`;
+        const postData = new URLSearchParams();
         postData.append('title', title);
         postData.append('content', content);
-        postData.append('odd_day', oddDay.id.toString());
-        postData.append('even_day', evenDay.id.toString());
         postData.append('categories', category.id.toString());
         postData.append('status', 'publish');
        
@@ -89,6 +90,10 @@ export default function HomeScreen() {
             return;
         }
 
+
+        // Combine the selected days into the content
+        // const combinedContent = `Odd Side: ${oddDay.label}\nEven Side: ${evenDay.label}`;
+
         setIsLoading(true);
         try {
             const post = await createPost();
@@ -114,6 +119,19 @@ export default function HomeScreen() {
                         onBlur={() => Keyboard.dismiss()}
                     />
                 </View>
+                {/* for test  */}
+                <View style={styles.textInputTwo}>
+                    <TextInput
+                        multiline={true}
+                        placeholderTextColor={'#888'}
+                        style={styles.inputTwo}
+                        placeholder="Cleaning date & odd/even side"
+                        value={content}
+                        onChangeText={setContent}
+                        onBlur={() => Keyboard.dismiss()}
+                    />
+                </View>
+
                 <View>
                     <Text style={styles.date}>
                         Select Date: 
@@ -287,4 +305,19 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         width: 300,
     },
+    inputTwo: {
+        height: 150,
+        width: 300,
+        borderRadius: 15,
+        backgroundColor: '#f0f0f0',
+        borderColor: "gray",
+        borderWidth: 1,
+        marginBottom: 12,
+        paddingHorizontal: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
+    }
 });
